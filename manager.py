@@ -22,10 +22,10 @@ class ExpenseManager:
     def get_total_by_period(self, user_id: int, start_ts: int, end_ts: int=None) -> float:
         "Отримати витрати за період"
         if end_ts == None:
-            end_ts = int(time.time)
+            end_ts = int(time.time())
         self.db.cursor.execute(
             """
-            SELECT SUM(amount) FROM expenses WHERE user_id=? AND timestamp BETWENE ? AND ?
+            SELECT SUM(amount) FROM expenses WHERE user_id=? AND timestamp BETWEEN ? AND ?
             """,
             (user_id, start_ts, end_ts)
         )
