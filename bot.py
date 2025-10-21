@@ -4,6 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from datetime import datetime
 from config import BOT_TOKEN
 from manager import ExpenseManager
 from categories import CATEGORIES
@@ -20,6 +21,7 @@ manager = ExpenseManager()
 # Словник для тимчасового збереження сум
 pending_amounts = {}
 
+
 # ------------------/start----------------------
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
@@ -28,7 +30,24 @@ async def cmd_start(message: types.Message):
         "Використай /add, щоб додати витрату."
     )
 
-#-----------------/add--------------------------
+
+# --------------------/today----------------------------
+@dp.message(Command("today"))
+async def stats_today(message: types.Message):
+    user_id = message.from_user.id
+    total = manager.get_today_total(user_id)
+    await message.answer(f"📅 Витрати за сьогодні: {total:.2f} грн")
+
+
+#--------------------/week-------------------------------
+@dp.message(Command("week"))
+async def stats_week(message: types.Message):
+    user_id = message.from_user.id
+    total = manager.get_week_delta(user_id)
+    await message.answer(f"🗓️ Витрати за останній тиждень: {total:.2f} грн")
+
+
+#----------------------/add-----------------------------------
 @dp.message(Command("add"))
 async def cmd_add(message: types.Message):
     pending_amounts[message.from_user.id] = None

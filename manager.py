@@ -1,9 +1,13 @@
 import time
+
+from datetime import datetime, timedelta
 from db import Database
+
 
 class ExpenseManager:
     def __init__(self, db_path="expenses.db"):
         self.db = Database(db_path)
+
 
     def add_expense(self, user_id: int, amount: float, category: str, note: str=""):
         """Додаємо нову витрату"""
@@ -19,6 +23,7 @@ class ExpenseManager:
         )
         self.db.connection.commit()
 
+
     def get_total_by_period(self, user_id: int, start_ts: int, end_ts: int=None) -> float:
         "Отримати витрати за період"
         if end_ts == None:
@@ -31,18 +36,37 @@ class ExpenseManager:
         )
         result = self.db.cursor.fetchone()[0]
         return result or 0.0
-    
+
+
     def get_today_total(self, user_id: int) -> float:
         """Повертає витрати за сьогодні"""
         now = int(time.time())
         start_of_day = now // 86400 * 86400
         return self.get_total_by_period(user_id, start_of_day)
+
+
+    # def get_week_total(self, user_id: int) -> float:
+    #     """Повертає витрати за тиждень"""
+    #     now = int(time.time())
+    #     start_of_week = now - 7 * 86400
+    #     return self.get_total_by_period(user_id, start_of_week, now)
+
+
+    def get_week_delta(self, user_id: int) -> float:
+        """Повертає витрати з початку поточного тижня (понеділка 00:00)"""
+        now = datetime.now()
+
+        # Знаходимо, який сьогодні день тижня (понеділок=0, неділя=6)
+        start_of_week = now - timedelta(days=now.weekday())
     
-    def get_week_total(self, user_id: int) -> float:
-        """Повертає витрати за тиждень"""
-        now = int(time.time())
-        start_of_week = now - 7 * 86400
-        return self.get_total_by_period(user_id, start_of_week, now)
+        # Робимо час рівно 00:00:00
+        start_of_week = datetime(start_of_week.year, start_of_week.month, start_of_week.day)
+    
+        # Перетворюємо в timestamp для сумісності з базою
+        start_of_week_ts = int(start_of_week.timestamp())
+        now_ts = int(now.timestamp())
+        return self.get_total_by_period(user_id, start_of_week_ts, now_ts)
+
 
     def get_month_total(self, user_id: int) -> float:
         """Витрати за останній місяць (30 днів)"""
