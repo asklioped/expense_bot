@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 
 class Database:
-    def __init__(self, db_path="expensive.db"):
+    def __init__(self, db_path="expenses.db"):
         self.db_path = Path(db_path)
         self.connection = sqlite3.connect(self.db_path)
         self.cursor = self.connection.cursor()
@@ -30,7 +30,7 @@ class Database:
         logging.info("Перевірено наявність таблиці 'expenses'")
 
 
-    def add_expense(self, user_id: int, amount: float, category: str, note: str = ""):
+    def add_expenses(self, user_id: int, amount: float, category: str, note: str = ""):
         """Додавання витрати до таблиці"""
         timestamp = int(sqlite3.time.time())
         self.cursor.execute(
