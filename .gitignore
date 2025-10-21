@@ -1,6 +1,6 @@
 venv/
 *.pyc
 __pycache__/
-expensive.db
+expenses.db
 config.py
 test_db.py
