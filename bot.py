@@ -4,7 +4,6 @@ import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from datetime import datetime
 from config import BOT_TOKEN
 from manager import ExpenseManager
 from categories import CATEGORIES

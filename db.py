@@ -30,25 +30,25 @@ class Database:
         logging.info("Перевірено наявність таблиці 'expenses'")
 
 
-    def add_expenses(self, user_id: int, amount: float, category: str, note: str = ""):
-        """Додавання витрати до таблиці"""
-        timestamp = int(sqlite3.time.time())
-        self.cursor.execute(
-            """
-            INSERT INTO expenses (user_id, amount, category, timestamp, note, created_at)
-            VALUES (?, ?, ?, ?, ?, ?)
-            """,
-            (user_id, amount, category, timestamp, note, timestamp)
-        )
-        self.connection.commit()
+    # def add_expenses(self, user_id: int, amount: float, category: str, note: str = ""):
+    #     """Додавання витрати до таблиці"""
+    #     timestamp = int(sqlite3.time.time())
+    #     self.cursor.execute(
+    #         """
+    #         INSERT INTO expenses (user_id, amount, category, timestamp, note, created_at)
+    #         VALUES (?, ?, ?, ?, ?, ?)
+    #         """,
+    #         (user_id, amount, category, timestamp, note, timestamp)
+    #     )
+    #     self.connection.commit()
 
 
-    def get_expenses(self, user_id: int, start_ts: int = 0, end_ts: int = None):
-        """Отримати витрати користувача за певний період"""
-        if end_ts is None:
-            end_ts = int(sqlite3.time.time())
-        self.cursor.execute(
-            "SELECT * FROM expenses WHERE user_id=? AND timestamp BETWEEN ? AND ?",
-            (user_id, start_ts, end_ts)
-        )
-        return self.cursor.fetchall()
+    # def get_expenses(self, user_id: int, start_ts: int = 0, end_ts: int = None):
+    #     """Отримати витрати користувача за певний період"""
+    #     if end_ts is None:
+    #         end_ts = int(sqlite3.time.time())
+    #     self.cursor.execute(
+    #         "SELECT * FROM expenses WHERE user_id=? AND timestamp BETWEEN ? AND ?",
+    #         (user_id, start_ts, end_ts)
+    #     )
+    #     return self.cursor.fetchall()
