@@ -4,7 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from config import BOT_TOKEN
+from config import BOT_TOKEN, tz_name
 from manager import ExpenseManager
 from categories import CATEGORIES
 
@@ -46,14 +46,20 @@ async def stats_week(message: types.Message):
     await message.answer(f"🗓️ Витрати за останній тиждень: {total:.2f} грн")
 
 
-#----------------------/add-----------------------------------
+#--------------------/time--------------------------------------
+@dp.message(Command("time"))
+async def show_local_time(message: types.Message):
+    await message.answer(f"🕑 Локальний час {manager.local_timestamp_txt(manager.local_timestamp(tz_name))}")        
+
+
+#--------------------/add-----------------------------------
 @dp.message(Command("add"))
 async def cmd_add(message: types.Message):
     pending_amounts[message.from_user.id] = None
     await message.answer("Введи суму витрати (Наприклад 250):")
 
 
-#----------------обробка введеної суми-------------
+#--------------------обробка введеної суми-------------
 @dp.message()
 async def process_amount(message: types.Message):
     user_id = message.from_user.id
@@ -62,8 +68,11 @@ async def process_amount(message: types.Message):
     if pending_amounts[user_id] is None:
         try:
             amount = float(message.text.replace(",", "."))
+            if amount <= 0:
+                await message.answer("🙅‍♀️Сума не може бути нульвою\nабо менше нуля\nСпробуй ще раз")
+                return
         except ValueError:
-            await message.answer("Сума має бути числом, спробуй ще раз")
+            await message.answer("🤦‍♀️Сума має бути числом, спробуй ще раз")
             return
         pending_amounts[user_id] = amount
 
@@ -76,7 +85,7 @@ async def process_amount(message: types.Message):
         await message.answer(f"Сума {amount:.2f} грн прийнята ✅\nТепер обери категорію:", reply_markup=kb)
 
 
-# -------------Обробка вибору категорії----------------
+# -------------------Обробка вибору категорії----------------
 @dp.callback_query()
 async def process_category(callback: types.CallbackQuery):
     user_id = callback.from_user.id
