@@ -43,7 +43,15 @@ async def stats_today(message: types.Message):
 async def stats_week(message: types.Message):
     user_id = message.from_user.id
     total = manager.get_week_delta(user_id)
-    await message.answer(f"🗓️ Витрати за останній тиждень: {total:.2f} грн")
+    await message.answer(f"🗓️ Витрати за поточний тиждень: {total:.2f} грн")
+
+
+#-------------------/month--------------------------------------
+@dp.message(Command("month"))
+async def stats_month(message: types.Message):
+    user_id = message.from_user.id
+    total = manager.get_month_total(user_id)
+    await message.answer(f"🗓️ Витрати за поточний місяць: {total:.2f} грн")
 
 
 #--------------------/time--------------------------------------

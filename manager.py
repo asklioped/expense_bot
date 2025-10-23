@@ -82,8 +82,21 @@ class ExpenseManager:
 
 
 # Треба переробити
+    # def get_month_total(self, user_id: int) -> float:
+    #     """Витрати за останній місяць (30 днів)"""
+    #     now = int(time.time())
+    #     start_of_month = now - 30 * 86400
+    #     return self.get_total_by_period(user_id, start_of_month, now)
+
     def get_month_total(self, user_id: int) -> float:
-        """Витрати за останній місяць (30 днів)"""
-        now = int(time.time())
-        start_of_month = now - 30 * 86400
-        return self.get_total_by_period(user_id, start_of_month, now)
+        """Витрати з початку поточного місяця"""
+        now = datetime.now()
+
+        # Початок поточного місяця (1 число о 00:00)
+        start_of_month = datetime(year=now.year, month=now.month, day=1)
+
+        # Перетворюємо у timestamp (секунди з 1970 року)
+        start_of_month_ts = int(start_of_month.timestamp())
+        now_ts = int(time.time())
+
+        return self.get_total_by_period(user_id, start_of_month_ts, now_ts)
