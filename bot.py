@@ -1,19 +1,23 @@
 import asyncio
 import logging
+import os
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from config import BOT_TOKEN, tz_name
+from config import tz_name
+from dotenv import load_dotenv
 from manager import ExpenseManager
 from categories import CATEGORIES
 
+load_dotenv()
+bot_token = os.getenv("BOT_TOKEN")
 
 # Додаємо логування
 logging.basicConfig(level=logging.INFO)
 
 # Ініціалізація бота та диспетчера та бізнес-логіки
-bot = Bot(token=BOT_TOKEN)
+bot = Bot(token=bot_token)
 dp = Dispatcher()
 manager = ExpenseManager()
 

@@ -1,6 +1,6 @@
 venv/
+.env
 *.pyc
 __pycache__/
 expenses.db
-config.py
 test_db.py
